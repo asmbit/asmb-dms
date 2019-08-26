@@ -92,11 +92,7 @@ public class Session {
 		boolean renew = false;
 		while (retry) {
 			Request request = builder.addHeader("Authorization", getTicket(renew)).build();
-			if (successCode == null) {
-				response = new ByteResponse(request, client);
-			} else {
-				response = new JsonResponse(request, client, parser, successCode);
-			}
+			response = successCode == null ? new ByteResponse(request, client) : new JsonResponse(request, client, parser, successCode);
 			if (response.getCode() == 401 && !renew) {
 				renew = true;
 			} else {
