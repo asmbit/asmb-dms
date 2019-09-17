@@ -255,8 +255,8 @@ class DmsTestCase {
 		response = dms.nodes(gadget).targets().get()
 		assertTrue(response.success)
 		assertEquals(200, response.code)
-		assertEquals(review, response.body.list.entries.entry[0].id)
-		assertEquals("review", response.body.list.entries.entry[0].name)
+		assertTrue(response.body.list.entries.entry.id.contains(review))
+		assertTrue(response.body.list.entries.entry.name.contains("review"))
 
 		response = dms.nodes(gadget).targets(review).delete()
 		assertTrue(response.success)
