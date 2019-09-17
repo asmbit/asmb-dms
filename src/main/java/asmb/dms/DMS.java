@@ -1,5 +1,7 @@
 package asmb.dms;
 
+import java.net.URLEncoder;
+
 import asmb.dms.api.Groups;
 import asmb.dms.api.Nodes;
 import asmb.dms.api.People;
@@ -27,7 +29,7 @@ public class DMS {
 	public Nodes nodes(String nodeId) {
 		String query = null;
 		if (nodeId.startsWith("/")) {
-			query = "?relativePath=" + nodeId;
+			query = "?relativePath=" + encode(nodeId);
 			nodeId = "-root-";
 		}
 		return new Nodes(session, API_CORE + "/nodes/" + nodeId, query);
@@ -69,4 +71,11 @@ public class DMS {
 		return new Tasks(session, API_WORKFLOW + "/tasks/" + taskId);
 	}
 
+	private String encode(String value) {
+		try {
+			return URLEncoder.encode(value, "UTF-8");
+		} catch (Exception e) {
+			return value;
+		}
+	}
 }
