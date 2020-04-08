@@ -473,4 +473,80 @@ class DmsTestCase {
 		assertEquals(200, response.code)
 		assertEquals(0, response.body.list.entries.entry.size())
 	}
+
+	@Test
+	void test7Tags() {
+
+		def dms = new DMS("admin")
+		def folderName = "test" + random.nextInt(99999)
+		def file = new File(getClass().getResource('/content/file.txt').toURI())
+		def response, value, nodeId, folderId, tagId
+
+		response = dms.nodes("-shared-").get()
+		assertTrue(response.success)
+		assertEquals(200, response.code)
+		assertEquals("Shared", response.body.entry.name)
+		assertEquals("cm:folder", response.body.entry.nodeType)
+		nodeId = response.body.entry.id
+
+		response = dms.nodes("-shared-").children().post(folderName, "cm:folder")
+		assertTrue(response.success)
+		assertEquals(201, response.code)
+		assertEquals("cm:folder", response.body.entry.nodeType)
+		folderId = response.body.entry.id
+
+		response = dms.nodes(folderId).children().post(file)
+		assertTrue(response.success)
+		assertEquals(201, response.code)
+		assertEquals("file.txt", response.body.entry.name)
+		assertEquals("cm:content", response.body.entry.nodeType)
+		assertEquals(folderId, response.body.entry.parentId)
+		nodeId = response.body.entry.id
+
+		response = dms.nodes(nodeId).tags().post('test1')
+		assertTrue(response.success)
+		assertEquals(201, response.code)
+
+		response = dms.nodes(nodeId).tags().post('test2')
+		assertTrue(response.success)
+		assertEquals(201, response.code)
+
+		response = dms.nodes(nodeId).tags().get()
+		assertTrue(response.success)
+		assertEquals(200, response.code)
+		assertTrue(response.body.list.entries.entry.tag.contains('test1'))
+		assertTrue(response.body.list.entries.entry.tag.contains('test2'))
+		assertEquals(2, response.body.list.entries.entry.size())
+		tagId = response.body.list.entries.entry[0].id
+
+		response = dms.nodes(nodeId).tags(tagId).delete()
+		assertTrue(response.success)
+		assertEquals(204, response.code)
+
+		response = dms.nodes(nodeId).tags().get()
+		assertTrue(response.success)
+		assertEquals(200, response.code)
+		assertFalse(response.body.list.entries.entry.tag.contains('test1'))
+		assertTrue(response.body.list.entries.entry.tag.contains('test2'))
+		assertEquals(1, response.body.list.entries.entry.size())
+		tagId = response.body.list.entries.entry[0].id
+
+		response = dms.nodes(nodeId).tags(tagId).delete()
+		assertTrue(response.success)
+		assertEquals(204, response.code)
+
+		response = dms.nodes(nodeId).tags().get()
+		assertTrue(response.success)
+		assertEquals(200, response.code)
+		assertFalse(response.body.list.entries.entry.tag.contains('test2'))
+		assertEquals(0, response.body.list.entries.entry.size())
+
+		response = dms.nodes(nodeId).delete()
+		assertTrue(response.success)
+		assertEquals(204, response.code)
+
+		response = dms.nodes(folderId).delete()
+		assertTrue(response.success)
+		assertEquals(204, response.code)
+	}
 }

@@ -41,6 +41,14 @@ public class Nodes extends Api {
 		return new Sources(session, path + "/sources", query);
 	}
 
+	public Tags tags() {
+		return new Tags(session, path + "/tags", query);
+	}
+
+	public Tags tags(String tagId) {
+		return new Tags(session, path + "/tags/" + tagId, query);
+	}
+
 	public Targets targets() {
 		return new Targets(session, path + "/targets", query);
 	}
@@ -120,6 +128,24 @@ public class Nodes extends Api {
 		public Sources(Session session, String path, String query) {
 			super(session, path, query, true);
 		}
+	}
+
+	public class Tags extends Api {
+
+		public Tags(Session session, String path, String query) {
+			super(session, path, query, true);
+		}
+
+		public Response post(String tag) {
+			Map<String, Object> body = new HashMap<String, Object>();
+			body.put("tag", tag);
+			return session.post(url, body);
+		}
+
+		public Response delete() {
+			return session.delete(url);
+		}
+
 	}
 
 	public class Targets extends Api {
