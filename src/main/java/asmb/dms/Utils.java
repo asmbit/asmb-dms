@@ -1,9 +1,8 @@
 package asmb.dms;
 
-import groovy.json.JsonOutput;
-
-import java.util.List;
 import java.util.Map;
+
+import groovy.json.JsonBuilder;
 
 public class Utils {
 
@@ -15,12 +14,8 @@ public class Utils {
 		return (String) map.get(key);
 	}
 
-	public static String prettyPrint(Map<String, Object> map) {
-		return JsonOutput.prettyPrint(JsonOutput.toJson(map));
-	}
-
-	public static String prettyPrint(List<?> list) {
-		return JsonOutput.prettyPrint(JsonOutput.toJson(list));
+	public static String toPrettyPrint(Object body) {
+		return new JsonBuilder(body).toPrettyString();
 	}
 
 }

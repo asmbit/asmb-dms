@@ -22,7 +22,7 @@ class DmsTestCase {
 		def response
 
 		response = dms.people().get()
-		//println Utils.prettyPrint(response.body)
+		//println Utils.toPrettyPrint(response.body)
 		assertTrue(response.success)
 		assertEquals(200, response.code)
 		assertTrue(response.body.list.entries.entry.id.contains("admin"))
@@ -82,6 +82,11 @@ class DmsTestCase {
 		assertEquals("Company Home", response.body.entry.name)
 		assertTrue(response.body.entry.isFolder)
 		assertEquals("cm:folder", response.body.entry.nodeType)
+
+		response = dms.nodes("/").get([include: 'association, permissions, path'])
+		assertTrue(response.success)
+		assertEquals(200, response.code)
+		assertTrue(response.body.entry.containsKey('permissions'))
 
 		response = dms.nodes("/").children().get()
 		assertTrue(response.success)
