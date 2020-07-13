@@ -1,5 +1,6 @@
 package asmb.dms.api;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,13 +14,25 @@ public class Processes extends Api {
 	}
 
 	public Response post(String processDefinitionKey, String assignee) {
+		return post(processDefinitionKey, assignee, null, null, null, null);
+	}
+
+	public Response post(String processDefinitionKey, String assignee, String description, Date dueDate, Integer priority, Boolean sendEMailNotifications) {
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("processDefinitionKey", processDefinitionKey);
-		if (assignee != null) {
-			Map<String, Object> variables = new HashMap<String, Object>();
+		Map<String, Object> variables = new HashMap<String, Object>();
+		if (assignee != null)
 			variables.put("bpm_assignee", assignee);
+		if (description != null)
+			variables.put("bpm_workflowDescription", description);
+		if (dueDate != null)
+			variables.put("bpm_workflowDueDate", dueDate);
+		if (priority != null)
+			variables.put("bpm_workflowPriority", priority);
+		if (sendEMailNotifications != null)
+			variables.put("bpm_sendEMailNotifications", sendEMailNotifications);
+		if (variables.size() > 0)
 			body.put("variables", variables);
-		}
 		return post(body);
 	}
 

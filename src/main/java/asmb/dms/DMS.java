@@ -26,6 +26,10 @@ public class DMS {
 		session = new Session(user, server, admin, password, timeout);
 	}
 
+	public Session getSession() {
+		return session;
+	}
+
 	public Nodes nodes(String nodeId) {
 		String query = null;
 		if (nodeId.startsWith("/")) {
