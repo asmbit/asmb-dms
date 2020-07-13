@@ -26,35 +26,26 @@ class DmsTestCase {
 		assertTrue(response.success)
 		assertEquals(200, response.code)
 		assertTrue(response.body.list.entries.entry.id.contains("admin"))
-		assertTrue(response.body.list.entries.entry.id.contains("afrena"))
-		assertTrue(response.body.list.entries.entry.id.contains("werner"))
 
 		response = dms.groups().get()
 		assertTrue(response.success)
 		assertEquals(200, response.code)
-		assertTrue(response.body.list.entries.entry.id.contains("GROUP_TEST"))
+		assertTrue(response.body.list.entries.entry.id.contains("GROUP_ALFRESCO_ADMINISTRATORS"))
 
 		response = dms.people('admin').get()
 		assertTrue(response.success)
 		assertEquals(200, response.code)
 		assertTrue(response.body.entry.capabilities.isAdmin)
 
-		response = dms.people('afrena').groups().get()
+		response = dms.groups("GROUP_ALFRESCO_ADMINISTRATORS").get()
 		assertTrue(response.success)
 		assertEquals(200, response.code)
-		assertTrue(response.body.list.entries.entry.id.contains("GROUP_TEST"))
+		assertEquals("GROUP_ALFRESCO_ADMINISTRATORS", response.body.entry.id)
 
-		response = dms.groups("GROUP_TEST").get()
+		response = dms.groups("GROUP_ALFRESCO_ADMINISTRATORS").members().get()
 		assertTrue(response.success)
 		assertEquals(200, response.code)
-		assertEquals("GROUP_TEST", response.body.entry.id)
-
-		response = dms.groups("GROUP_TEST").members().get()
-		assertTrue(response.success)
-		assertEquals(200, response.code)
-		assertEquals(2, response.body.list.entries.entry.size())
-		assertTrue(response.body.list.entries.entry.id.contains("afrena"))
-		assertTrue(response.body.list.entries.entry.id.contains("werner"))
+		assertTrue(response.body.list.entries.entry.id.contains("admin"))
 
 		response = dms.people("-me-").favorites().get()
 		assertTrue(response.success)
@@ -72,14 +63,12 @@ class DmsTestCase {
 		response = dms.nodes("-root-").get()
 		assertTrue(response.success)
 		assertEquals(200, response.code)
-		assertEquals("Company Home", response.body.entry.name)
 		assertTrue(response.body.entry.isFolder)
 		assertEquals("cm:folder", response.body.entry.nodeType)
 
 		response = dms.nodes("/").get()
 		assertTrue(response.success)
 		assertEquals(200, response.code)
-		assertEquals("Company Home", response.body.entry.name)
 		assertTrue(response.body.entry.isFolder)
 		assertEquals("cm:folder", response.body.entry.nodeType)
 
@@ -217,7 +206,7 @@ class DmsTestCase {
 	@Test
 	void test4Associations() {
 
-		def dms = new DMS("afrena")
+		def dms = new DMS("admin")
 		def image = new File(getClass().getResource('/content/asmb.gif').toURI())
 		def response, folder, company, gadget, review, file1, file2
 
@@ -402,7 +391,7 @@ class DmsTestCase {
 		def dms = new DMS("admin")
 		def response, processId, taskId, i
 
-		response = dms.processes().post("activitiAdhoc", "afrena")
+		response = dms.processes().post("activitiAdhoc", "test")
 		assertTrue(response.success)
 		assertEquals(201, response.code)
 		assertEquals("activitiAdhoc", response.body.entry.processDefinitionKey)
@@ -424,10 +413,10 @@ class DmsTestCase {
 		assertTrue(response.success)
 		assertEquals(200, response.code)
 		assertEquals("adhocTask", response.body.entry.activityDefinitionId)
-		assertEquals("afrena", response.body.entry.assignee)
+		assertEquals("test", response.body.entry.assignee)
 		assertEquals("claimed", response.body.entry.state)
 
-		dms = new DMS("afrena")
+		dms = new DMS("test")
 
 		response = dms.tasks().get()
 		assertTrue(response.success)
