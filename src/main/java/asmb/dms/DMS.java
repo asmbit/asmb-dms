@@ -7,6 +7,7 @@ import asmb.dms.api.Nodes;
 import asmb.dms.api.People;
 import asmb.dms.api.Processes;
 import asmb.dms.api.Search;
+import asmb.dms.api.SharedLinks;
 import asmb.dms.api.Tasks;
 import asmb.dms.http.Session;
 
@@ -57,6 +58,14 @@ public class DMS {
 
 	public Groups groups(String groupId) {
 		return new Groups(session, API_CORE + "/groups/" + groupId);
+	}
+
+	public SharedLinks sharedLinks() {
+		return new SharedLinks(session, API_CORE + "/shared-links");
+	}
+
+	public SharedLinks sharedLinks(String sharedLinkId) {
+		return new SharedLinks(session, API_CORE + "/shared-links/" + sharedLinkId);
 	}
 
 	public Processes processes() {
