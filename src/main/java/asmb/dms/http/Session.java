@@ -78,8 +78,12 @@ public class Session {
 	}
 
 	public Response put(String url, File file) {
+		return put(url, file, null);
+	}
+
+	public Response put(String url, File file, Map<String, String> query) {
 		RequestBody body = body(file);
-		return call(request(url).put(body), 200);
+		return call(request(url, query).put(body), 200);
 	}
 
 	public Response file(String url, Map<String, String> query) {

@@ -543,4 +543,62 @@ class DmsTestCase {
 		assertTrue(response.success)
 		assertEquals(204, response.code)
 	}
+
+	@Test
+	void test8Versions() {
+
+		def dms = new DMS("admin")
+		def folderName = "test" + random.nextInt(99999)
+		def file = new File(getClass().getResource('/content/file.txt').toURI())
+		def response, value, nodeId, folderId, tagId
+
+		response = dms.nodes("-shared-").children().post(folderName, "cm:folder")
+		assertTrue(response.success)
+		assertEquals(201, response.code)
+		assertEquals("cm:folder", response.body.entry.nodeType)
+		folderId = response.body.entry.id
+
+		response = dms.nodes(folderId).children().post("file.txt", "cm:content")
+		assertTrue(response.success)
+		assertEquals(201, response.code)
+		assertEquals("cm:content", response.body.entry.nodeType)
+		nodeId = response.body.entry.id
+
+		response = dms.nodes(nodeId).content().put(file, true)
+		assertTrue(response.success)
+		assertEquals("file.txt", response.body.entry.name)
+		assertEquals("cm:content", response.body.entry.nodeType)
+		assertEquals("1.0", response.body.entry.properties["cm:versionLabel"])
+		nodeId = response.body.entry.id
+
+		response = dms.nodes(nodeId).lock().post()
+		assertTrue(response.success)
+		assertEquals(200, response.code)
+		response.close()
+
+		response = dms.nodes(nodeId).content().put(file, true)
+		assertTrue(response.success)
+		assertEquals("2.0", response.body.entry.properties["cm:versionLabel"])
+		nodeId = response.body.entry.id
+		
+		response = dms.nodes(nodeId).unlock().post()
+		assertTrue(response.success)
+		assertEquals(200, response.code)
+		response.close()
+
+		response = dms.nodes(nodeId).content().get()
+		assertTrue(response.success)
+		assertEquals(200, response.code)
+		assertEquals(response.byteStream.text, file.text)
+		response.close()
+
+		response = dms.nodes(nodeId).delete()
+		assertTrue(response.success)
+		assertEquals(204, response.code)
+
+		response = dms.nodes(folderId).delete()
+		assertTrue(response.success)
+		assertEquals(204, response.code)
+
+	}
 }

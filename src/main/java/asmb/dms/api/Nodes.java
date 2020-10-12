@@ -29,6 +29,14 @@ public class Nodes extends Api {
 		return new Content(session, path + "/content", query);
 	}
 
+	public Lock lock() {
+		return new Lock(session, path + "/lock", query);
+	}
+
+	public Unlock unlock() {
+		return new Unlock(session, path + "/unlock", query);
+	}
+
 	public Comments comments() {
 		return new Comments(session, path + "/comments", query);
 	}
@@ -186,6 +194,38 @@ public class Nodes extends Api {
 
 	}
 
+	public class Lock extends Api {
+
+		public Lock(Session session, String path, String query) {
+			super(session, path, query, true);
+		}
+
+		public Response post() {
+			return post(0, "ALLOW_OWNER_CHANGES", "PERSISTENT");
+		}
+
+		public Response post(int timeToExpire, String type, String lifetime) {
+			Map<String, Object> body = new HashMap<String, Object>();
+			body.put("timeToExpire", timeToExpire);
+			body.put("type", type);
+			body.put("lifetime", lifetime);
+			return session.post(url, body, 200);
+		}
+
+	}
+
+	public class Unlock extends Api {
+
+		public Unlock(Session session, String path, String query) {
+			super(session, path, query, true);
+		}
+
+		public Response post() {
+			return session.post(url, null, 200);
+		}
+
+	}
+
 	public class Content extends Api {
 
 		public Content(Session session, String path, String query) {
@@ -198,7 +238,15 @@ public class Nodes extends Api {
 		}
 
 		public Response put(File file) {
-			return session.put(url, file);
+			return put(file, false);
+		}
+
+		public Response put(File file, boolean majorVersion) {
+			Map<String, String> query = new HashMap<String, String>();
+			if (majorVersion) {
+				query.put("majorVersion", "true");
+			}
+			return session.put(url, file, query);
 		}
 
 	}
