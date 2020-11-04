@@ -423,6 +423,28 @@ class DmsTestCase {
 		assertEquals(200, response.code)
 		assertTrue(response.body.list.entries.entry.id.contains(taskId))
 
+		response = dms.tasks(taskId).variables().get()
+		assertTrue(response.success)
+		assertEquals(200, response.code)
+
+		response = dms.tasks(taskId).variables().post("global", "bpm_description", "description", "d:text")
+		assertTrue(response.success)
+		assertEquals(201, response.code)
+
+		response = dms.tasks(taskId).variables().post("local", "test1", "value1", "d:text")
+		assertTrue(response.success)
+		assertEquals(201, response.code)
+
+		response = dms.tasks(taskId).variables().get()
+		assertTrue(response.success)
+		assertEquals(200, response.code)
+		assertTrue(response.body.list.entries.entry.name.contains('test1'))
+		assertTrue(response.body.list.entries.entry.value.contains('value1'))
+
+		response = dms.tasks(taskId).variables('test1').delete()
+		assertTrue(response.success)
+		assertEquals(204, response.code)
+
 		response = dms.tasks(taskId).put(State.COMPLETED)
 		assertTrue(response.success)
 		assertEquals(200, response.code)
@@ -580,7 +602,7 @@ class DmsTestCase {
 		assertTrue(response.success)
 		assertEquals("2.0", response.body.entry.properties["cm:versionLabel"])
 		nodeId = response.body.entry.id
-		
+
 		response = dms.nodes(nodeId).unlock().post()
 		assertTrue(response.success)
 		assertEquals(200, response.code)
@@ -599,6 +621,5 @@ class DmsTestCase {
 		response = dms.nodes(folderId).delete()
 		assertTrue(response.success)
 		assertEquals(204, response.code)
-
 	}
 }

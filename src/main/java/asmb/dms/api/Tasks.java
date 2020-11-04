@@ -26,6 +26,10 @@ public class Tasks extends Api {
 		return new Variables(session, path + "/variables");
 	}
 
+	public Variables variables(String variableId) {
+		return new Variables(session, path + "/variables/" + variableId);
+	}
+
 	public class Items extends Api {
 
 		public Items(Session session, String path) {
@@ -38,6 +42,19 @@ public class Tasks extends Api {
 
 		public Variables(Session session, String url) {
 			super(session, url);
+		}
+
+		public Response post(String scope, String name, String value, String type) {
+			Map<String, Object> body = new HashMap<String, Object>();
+			body.put("scope", scope);
+			body.put("name", name);
+			body.put("value", value);
+			body.put("type", type);
+			return session.post(url, body);
+		}
+
+		public Response delete() {
+			return session.delete(url);
 		}
 
 	}
