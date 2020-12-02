@@ -33,6 +33,10 @@ public class Nodes extends Api {
 		return new Lock(session, path + "/lock", query);
 	}
 
+	public Move move() {
+		return new Move(session, path + "/move", query);
+	}
+
 	public Unlock unlock() {
 		return new Unlock(session, path + "/unlock", query);
 	}
@@ -222,6 +226,25 @@ public class Nodes extends Api {
 
 		public Response post() {
 			return session.post(url, null, 200);
+		}
+
+	}
+
+	public class Move extends Api {
+
+		public Move(Session session, String path, String query) {
+			super(session, path, query, true);
+		}
+
+		public Response post(String targetParentId) {
+			return post(targetParentId, null);
+		}
+
+		public Response post(String targetParentId, String name) {
+			Map<String, Object> body = new HashMap<String, Object>();
+			body.put("targetParentId", targetParentId);
+			body.put("name", name);
+			return session.post(url, body, 200);
 		}
 
 	}

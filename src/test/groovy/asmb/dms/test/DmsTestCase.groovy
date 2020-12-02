@@ -139,10 +139,17 @@ class DmsTestCase {
 		assertTrue(response.success)
 		assertEquals(204, response.code)
 
-		response = dms.nodes(folderId).children().post("file3.txt", "cm:content")
+		response = dms.nodes(folderId).children().post("folder3", "cm:folder")
+		assertTrue(response.success)
+		assertEquals("folder3", response.body.entry.name)
+		assertEquals("cm:folder", response.body.entry.nodeType)
+		nodeId = response.body.entry.id
+
+		response = dms.nodes(nodeId).children().post("file3.txt", "cm:content")
 		assertTrue(response.success)
 		assertEquals(201, response.code)
 		assertEquals("cm:content", response.body.entry.nodeType)
+		assertEquals(nodeId, response.body.entry.parentId)
 		nodeId = response.body.entry.id
 
 		response = dms.nodes(nodeId).content().put(file)
@@ -150,6 +157,16 @@ class DmsTestCase {
 		assertEquals("file3.txt", response.body.entry.name)
 		assertEquals("cm:content", response.body.entry.nodeType)
 		nodeId = response.body.entry.id
+
+		response = dms.nodes(nodeId).move().post(folderId)
+		assertTrue(response.success)
+		assertEquals(folderId, response.body.entry.parentId)
+		assertEquals("file3.txt", response.body.entry.name)
+
+		response = dms.nodes(nodeId).move().post(folderId, "file4.txt")
+		assertTrue(response.success)
+		assertEquals(folderId, response.body.entry.parentId)
+		assertEquals("file4.txt", response.body.entry.name)
 
 		response = dms.nodes(nodeId).content().get()
 		assertTrue(response.success)
