@@ -185,7 +185,6 @@ class DmsTestCase {
 		assertEquals(200, response.code)
 		assertEquals(response.byteStream.text, file.text)
 		response.close()
-		return 
 
 		response = dms.nodes(nodeId).delete()
 		assertTrue(response.success)
