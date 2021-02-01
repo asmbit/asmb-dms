@@ -29,6 +29,14 @@ public class Nodes extends Api {
 		return new Content(session, path + "/content", query);
 	}
 
+	public Renditions renditions() {
+		return new Renditions(session, path + "/renditions", query);
+	}
+
+	public Renditions renditions(String renditionId) {
+		return new Renditions(session, path + "/renditions/" + renditionId, query);
+	}
+
 	public Lock lock() {
 		return new Lock(session, path + "/lock", query);
 	}
@@ -270,6 +278,35 @@ public class Nodes extends Api {
 				query.put("majorVersion", "true");
 			}
 			return session.put(url, file, query);
+		}
+
+	}
+
+	public class Renditions extends Api {
+
+		public Renditions(Session session, String path, String query) {
+			super(session, path, query, true);
+		}
+
+		public Content content() {
+			return new Content(session, path + "/content", query);
+		}
+
+		public class Content extends Api {
+
+			public Content(Session session, String path, String query) {
+				super(session, path, query, true);
+			}
+
+			@Override
+			public Response get() {
+				return get(null);
+			}
+
+			@Override
+			public Response get(Map<String, String> query) {
+				return session.file(url, query);
+			}
 		}
 
 	}

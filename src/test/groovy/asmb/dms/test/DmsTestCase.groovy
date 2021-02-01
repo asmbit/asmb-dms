@@ -114,6 +114,18 @@ class DmsTestCase {
 		assertEquals(response.byteStream.text, file.text)
 		response.close()
 
+		response = dms.nodes(nodeId).renditions().get()
+		assertTrue(response.success)
+		assertEquals(200, response.code)
+		assertTrue(response.body.list.entries.entry.id.contains('doclib'))
+		assertTrue(response.body.list.entries.entry.id.contains('pdf'))
+		response.close()
+
+		response = dms.nodes(nodeId).renditions('doclib').get()
+		assertTrue(response.success)
+		assertEquals(200, response.code)
+		response.close()
+
 		response = dms.nodes(nodeId).delete()
 		assertTrue(response.success)
 		assertEquals(204, response.code)
@@ -173,6 +185,7 @@ class DmsTestCase {
 		assertEquals(200, response.code)
 		assertEquals(response.byteStream.text, file.text)
 		response.close()
+		return 
 
 		response = dms.nodes(nodeId).delete()
 		assertTrue(response.success)
