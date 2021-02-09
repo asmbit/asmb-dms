@@ -114,6 +114,10 @@ class DmsTestCase {
 		assertEquals(response.byteStream.text, file.text)
 		response.close()
 
+		response = dms.nodes(nodeId).renditions().post('pdf')
+		assertTrue(response.success)
+		assertEquals(202, response.code)
+
 		response = dms.nodes(nodeId).renditions().get()
 		assertTrue(response.success)
 		assertEquals(200, response.code)

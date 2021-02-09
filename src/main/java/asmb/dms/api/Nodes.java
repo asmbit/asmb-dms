@@ -288,6 +288,12 @@ public class Nodes extends Api {
 			super(session, path, query, true);
 		}
 
+		public Response post(String renditionId) {
+			Map<String, Object> body = new HashMap<String, Object>();
+			body.put("id", renditionId);
+			return session.post(url, body, 202);
+		}
+
 		public Content content() {
 			return new Content(session, path + "/content", query);
 		}
