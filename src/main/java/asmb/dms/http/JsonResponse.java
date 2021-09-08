@@ -26,8 +26,10 @@ public class JsonResponse implements Response {
 			response = client.newCall(request).execute();
 			status = response.toString();
 			code = response.code();
-			if (response.isSuccessful() && response.body().contentLength() != 0  && !"No Content".equals(response.message()))
+			if (response.isSuccessful() && response.body().contentLength() != 0 && response.code() != 204) {
 				body = (Map<String, Object>) parser.parse(response.body().byteStream());
+			}
+			response.body().close();
 			success = (response.code() == successCode);
 		} catch (Exception e) {
 			log.error(e.getMessage());
