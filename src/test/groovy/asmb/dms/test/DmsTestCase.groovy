@@ -437,11 +437,6 @@ class DmsTestCase {
 		assertEquals(1, response.body.list.entries.entry.size())
 		taskId = response.body.list.entries.entry.id[0]
 
-		response = dms.tasks().get()
-		assertTrue(response.success)
-		assertEquals(200, response.code)
-		assertTrue(response.body.list.entries.entry.id.contains(taskId))
-
 		response = dms.tasks(taskId).get()
 		assertTrue(response.success)
 		assertEquals(200, response.code)
