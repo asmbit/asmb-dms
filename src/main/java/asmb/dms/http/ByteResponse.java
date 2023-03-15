@@ -48,7 +48,11 @@ public class ByteResponse implements Response {
 
 	@Override
 	public InputStream getByteStream() {
-		return body.byteStream();
+		if (body != null) {
+			return body.byteStream();
+		} else {
+			return null;
+		}
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-server=http://dms.local:8080
+server=dms.local:8080
 admin=admin
 pw=pw
 ticket=/alfresco/service/asmb/ticket?u=
